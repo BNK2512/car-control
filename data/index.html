@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="styles.css" />
+    <title>Điều Khiển</title>
+</head>
+
+<body>
+    <div class="orientation-warning">
+        <i>🔄</i>
+        <div>Vui lòng xoay ngang điện thoại để sử dụng điều khiển</div>
+    </div>
+
+    <!-- Menu Button -->
+    <div class="menu-btn" id="menuToggle">☰ Menu</div>
+
+    <!-- Menu Dropdown -->
+    <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-section">
+            <div class="menu-title">Chế độ điều khiển</div>
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="button">nút bấm</button>
+                <button class="mode-btn" data-mode="joystick">joystick</button>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">Ngôn ngữ</div>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="vi">Tiếng Việt</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="jp">日本語</button>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">Giao diện</div>
+                <div class="menu-toggle">
+                    <span class="toggle-label">Chế độ sáng/tối</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" class="toggle-checkbox" id="darkModeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+        </div>
+    </div>
+
+    <!-- Output Status -->
+    <div class="output">
+        Chế độ: <span class="status" id="currentMode">nút bấm</span> |
+        Trạng thái: <span class="status" id="controlStatus">Chưa có thao tác</span>
+    </div>
+
+    <!-- Button Mode -->
+    <div class="control-container button-mode active">
+        <div class="left-controls">
+            <button class="control-btn forward-btn">↑</button>
+            <button class="control-btn backward-btn">↓</button>
+        </div>
+
+        <div class="center-controls">
+            <!-- Phần này để dành cho các chức năng sau này -->
+        </div>
+
+        <div class="right-controls">
+            <div class="throttle-container">
+                <div class="throttle-label">Tốc độ</div>
+                <div class="throttle">
+                    <div class="throttle-level"></div>
+                    <div class="throttle-handle"></div>
+                </div>
+            </div>
+
+            <div class="steering-buttons">
+                <button class="control-btn left-btn">←</button>
+                <button class="control-btn right-btn">→</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Joystick Mode -->
+    <div class="control-container joystick-mode">
+        <div class="left-controls">
+            <div class="joystick-base">
+                <div class="joystick-head" id="joystickHead"></div>
+            </div>
+        </div>
+
+        <div class="center-controls">
+            <!-- Phần này để dành cho các chức năng sau này -->
+        </div>
+
+        <div class="right-controls">
+            <div class="horn-container">
+                <button class="horn-btn">CÒI</button>
+            </div>
+        </div>
+    </div>
+    <script src="fn-dollar.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
