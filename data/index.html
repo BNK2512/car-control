@@ -14,69 +14,95 @@
         <div>Vui lòng xoay ngang điện thoại để sử dụng điều khiển</div>
     </div>
 
-    <!-- Menu Button -->
-    <div class="menu-btn" id="menuToggle">☰ Menu</div>
+    <div class="header-container">
+        <div class="header-left">
 
-    <!-- Menu Dropdown -->
-    <div class="menu-dropdown" id="menuDropdown">
-        <div class="menu-section">
-            <div class="menu-title">Chế độ điều khiển</div>
-            <div class="mode-selector">
-                <button class="mode-btn active" data-mode="button">nút bấm</button>
-                <button class="mode-btn" data-mode="joystick">joystick</button>
+        </div>
+        <div class="header-center">
+            <!-- Output Status -->
+            <div class="output">
+                Chế độ: <span class="status" id="currentMode">nút bấm</span> |
+                Trạng thái: <span class="status" id="controlStatus">Chưa có thao tác</span>
             </div>
         </div>
-        
-        <div class="menu-section">
+        <div class="header-right">
+            <!-- Menu Button -->
+            <div class="menu-btn" id="menuToggle">☰ Menu</div>
+
+            <!-- Menu Dropdown -->
+            <div class="menu-dropdown" id="menuDropdown">
+                <div class="menu-section">
+                    <div class="menu-title">Chế độ điều khiển</div>
+                    <div class="mode-selector">
+                        <button class="mode-btn active" data-mode="button">nút bấm</button>
+                        <button class="mode-btn" data-mode="joystick">joystick</button>
+                    </div>
+                </div>
+
+                <!-- <div class="menu-section">
             <div class="menu-title">Ngôn ngữ</div>
             <div class="language-selector">
                 <button class="lang-btn active" data-lang="vi">Tiếng Việt</button>
                 <button class="lang-btn" data-lang="en">English</button>
                 <button class="lang-btn" data-lang="jp">日本語</button>
             </div>
-        </div>
-        
-        <div class="menu-section">
-            <div class="menu-title">Giao diện</div>
-                <div class="menu-toggle">
-                    <span class="toggle-label">Chế độ sáng/tối</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" class="toggle-checkbox" id="darkModeToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-        </div>
-    </div>
+        </div> -->
 
-    <!-- Output Status -->
-    <div class="output">
-        Chế độ: <span class="status" id="currentMode">nút bấm</span> |
-        Trạng thái: <span class="status" id="controlStatus">Chưa có thao tác</span>
+                <div class="menu-section">
+                    <div class="menu-title">Giao diện</div>
+                    <div class="menu-toggle">
+                        <span class="toggle-label">Chế độ sáng/tối</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked class="l" id="darkModeToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Button Mode -->
     <div class="control-container button-mode active">
         <div class="left-controls">
-            <button class="control-btn forward-btn">↑</button>
-            <button class="control-btn backward-btn">↓</button>
+            <button class="control-btn forward-btn">
+                <div class="uiverse-inner">
+                    <span>↑</span>
+                </div>
+            </button>
+            <button class="control-btn backward-btn">
+                <div class="uiverse-inner">
+                    <span>↓</span>
+                </div>
+            </button>
         </div>
 
         <div class="center-controls">
-            <!-- Phần này để dành cho các chức năng sau này -->
+            <div class="horn-container">
+                <button class="horn-btn">CÒI</button>
+            </div>
         </div>
 
         <div class="right-controls">
-            <div class="throttle-container">
-                <div class="throttle-label">Tốc độ</div>
-                <div class="throttle">
-                    <div class="throttle-level"></div>
-                    <div class="throttle-handle"></div>
+            <div class="speed-container">
+                <div class="speed-label">Tốc độ</div>
+                <div class="speed">
+                    <div class="speed-level"></div>
+                    <div class="speed-handle"></div>
                 </div>
             </div>
 
             <div class="steering-buttons">
-                <button class="control-btn left-btn">←</button>
-                <button class="control-btn right-btn">→</button>
+                <button class="control-btn left-btn">
+                    <div class="uiverse-inner">
+                        <span>←</span>
+                    </div>
+                </button>
+                <button class="control-btn right-btn">
+                    <div class="uiverse-inner">
+                        <span>→</span>
+                    </div>
+                </button>
             </div>
         </div>
     </div>
@@ -94,6 +120,13 @@
         </div>
 
         <div class="right-controls">
+            <div class="speed-container">
+                <div class="speed-label">Tốc độ</div>
+                <div class="speed">
+                    <div class="speed-level"></div>
+                    <div class="speed-handle"></div>
+                </div>
+            </div>
             <div class="horn-container">
                 <button class="horn-btn">CÒI</button>
             </div>

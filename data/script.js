@@ -9,14 +9,14 @@ $('#darkModeToggle').on('change', function () {
 });
 
 // Kiểm tra dark mode từ localStorage
-if (localStorage.getItem('darkMode') === 'true') {
-    $('#darkModeToggle').element.checked = true;
+if (localStorage.getItem('darkMode') === 'false') {
+    $('#darkModeToggle').element.checked = false;
     $('body').addClass('dark-mode');
 }
 
 // Biến toàn cục lưu trạng thái điều khiển
 const controlState = {
-    throttle: 50, // Giá trị mặc định 50%
+    speed: 50, // Giá trị mặc định 50%
     buttonStates: {
         forward: false,
         backward: false,
@@ -46,70 +46,75 @@ $('@.mode-btn').on('click', function () {
     // Cập nhật thông báo
     $('#currentMode').element.textContent = mode === 'button' ? 'nút bấm' : 'joystick';
     updateControlStatus();
+
+        if (mode === 'joystick') {
+        setTimeout(updateJoystickDimensions, 200);
+    }
 });
 
 // Xử lý thanh tăng tốc
-const throttles = $('@.throttle');
-const throttleHandles = $('@.throttle-handle');
-const throttleLevels = $('@.throttle-level');
+const speeds = $('@.speed');
+const speedHandles = $('@.speed-handle');
+const speedLevels = $('@.speed-level');
 let isDragging = false;
-let activeThrottle = null;
+let activeSpeed = null;
 
-function updateThrottle(value) {
+function updateSpeed(value) {
     value = Math.max(0, Math.min(100, value));
-    controlState.throttle = value;
-    throttleLevels.elements.forEach(level => level.style.width = `${value}%`);
-    throttleHandles.elements.forEach(handle => handle.style.right = `${100 - value}%`);
+    controlState.speed = value;
+    speedLevels.elements.forEach(level => level.style.width = `${value}%`);
+    speedHandles.elements.forEach(handle => handle.style.right = `${100 - value}%`);
     sendControlData();
 }
 
 // Click hoặc touch trên thanh: chọn vị trí bất kỳ
-throttles.elements.forEach(throttle => {
-    throttle.addEventListener('click', (e) => {
-        const rect = throttle.getBoundingClientRect();
-        updateThrottle((e.clientX - rect.left) / rect.width * 100);
+speeds.elements.forEach(speeds => {
+    speeds.addEventListener('click', (e) => {
+        const rect = speeds.getBoundingClientRect();
+        updateSpeed((e.clientX - rect.left) / rect.width * 100);
     });
-    throttle.addEventListener('touchstart', (e) => {
-        const rect = throttle.getBoundingClientRect();
-        updateThrottle((e.touches[0].clientX - rect.left) / rect.width * 100);
+    speeds.addEventListener('touchstart', (e) => {
+        const rect = speeds.getBoundingClientRect();
+        updateSpeed((e.touches[0].clientX - rect.left) / rect.width * 100);
     });
 });
 
-// Kéo handle
-throttleHandles.elements.forEach((handle, idx) => {
+// Kéo handle thanh tăng tốc
+speedHandles.elements.forEach((handle, idx) => {
     handle.addEventListener('mousedown', (e) => {
         isDragging = true;
-        activeThrottle = throttles.elements[idx];
+        activeSpeed = speeds.elements[idx];
         e.preventDefault();
     });
     handle.addEventListener('touchstart', (e) => {
         isDragging = true;
-        activeThrottle = throttles.elements[idx];
+        activespeed = speeds.elements[idx];
         e.preventDefault();
     });
 });
 
-// Di chuyển chuột/touch khi kéo
+// Xử lý trên PC Di chuyển chuột/touch khi kéo
 document.addEventListener('mousemove', (e) => {
-    if (!isDragging || !activeThrottle) return;
-    const rect = activeThrottle.getBoundingClientRect();
-    updateThrottle((e.clientX - rect.left) / rect.width * 100);
+    if (!isDragging || !activespeed) return;
+    const rect = activeSpeed.getBoundingClientRect();
+    updateSpeed((e.clientX - rect.left) / rect.width * 100);
 });
 document.addEventListener('touchmove', (e) => {
-    if (!isDragging || !activeThrottle) return;
-    const rect = activeThrottle.getBoundingClientRect();
-    updateThrottle((e.touches[0].clientX - rect.left) / rect.width * 100);
+    if (!isDragging || !activeSpeed) return;
+    const rect = activeSpeed.getBoundingClientRect();
+    updateSpeed((e.touches[0].clientX - rect.left) / rect.width * 100);
 });
 
 // Kết thúc kéo
 document.addEventListener('mouseup', () => {
     isDragging = false;
-    activeThrottle = null;
+    activeSpeed = null;
 });
 document.addEventListener('touchend', () => {
     isDragging = false;
-    activeThrottle = null;
+    activeSpeed = null;
 });
+
 // Xử lý chế độ nút bấm
 const setupButton = (btn, stateKey) => {
     const startEvents = ['mousedown', 'touchstart'];
@@ -160,8 +165,7 @@ function updateControlStatus() {
         else if (bs.left) status = 'Đang rẽ trái';
         else if (bs.right) status = 'Đang rẽ phải';
         else status = 'Chưa có thao tác';
-
-        if (bs.horn) status += status === 'Chưa có thao tác' ? 'Đang bóp còi' : ' + còi';
+        if (bs.horn) status += status === 'Chưa có thao tác' ? ' Đang bóp còi' : ' + còi';
     } else {
         const js = controlState.joystick;
         const distance = Math.sqrt(js.x * js.x + js.y * js.y);
@@ -181,27 +185,42 @@ function updateControlStatus() {
     sendControlData();
 }
 
+// đang nghiên cứu :)
+function throttle(func, limit) {
+    let inThrottle;
+    return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    }
+}
+
 // Hàm gửi dữ liệu điều khiển
-function sendControlData() {
+function sendControlData () {
     const data = {
         mode: controlState.currentMode,
-        throttle: controlState.throttle,
+        speed: controlState.speed,
+        horn: controlState.horn,
         buttons: controlState.buttonStates,
         joystick: controlState.joystick,
         timestamp: Date.now()
     };
     fetch('/control', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(resp => {
-         console.log('ESP32 response:', resp);
-    })
-    .catch(err => {
-         console.log('ESP32 err:', err);
-    });
+        .then(res => res.json())
+        .then(resp => {
+            console.log('ESP32 response:', resp);
+        })
+        .catch(err => {
+            //console.log('ESP32 err:', err);
+        });
 }
 
 // Xử lý joystick
@@ -228,7 +247,7 @@ window.addEventListener('resize', updateJoystickDimensions);
 
 function initJoystick() {
     if (!joystickHead || !joystickBase) {
-        console.error('Không tìm thấy joystick elements');
+        //console.error('Không tìm thấy joystick elements');
         return;
     }
 
@@ -321,11 +340,10 @@ function updateJoystick(input) {
 
     joystickHead.element.style.transform = `translate(-50%, -50%) translate(${deltaX}px, ${deltaY}px)`;
 
-    console.log("base",base.maxDistance);
     if (base.maxDistance > 0) {
         controlState.joystick.x = (deltaX / base.maxDistance);
         controlState.joystick.y = (deltaY / base.maxDistance);
-            console.log('delta:', deltaX, deltaY, 'joy:', controlState.joystick.x, controlState.joystick.y);
+        //console.log('delta:', deltaX, deltaY, 'joy:', controlState.joystick.x, controlState.joystick.y);
     } else {
         controlState.joystick.x = 0;
         controlState.joystick.y = 0;
@@ -357,42 +375,43 @@ function checkOrientation() {
     }
 }
 
-$.on(window, 'load', checkOrientation);
-$.on(window, 'resize', checkOrientation);
-
-document.addEventListener('DOMContentLoaded', function () {
-    initJoystick();
-    checkOrientation();
-    window.addEventListener('orientationchange', checkOrientation);
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('resize', updateJoystickDimensions);
-
-        // Menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const menuDropdown = document.getElementById('menuDropdown');
-    
-    menuToggle.addEventListener('click', function() {
-        menuDropdown.classList.toggle('show');
-    });
-    
-    // Đóng menu khi click bên ngoài
-    document.addEventListener('click', function(event) {
-        if (!menuToggle.contains(event.target) && !menuDropdown.contains(event.target)) {
-            menuDropdown.classList.remove('show');
-        }
-    });
-    
     // Xử lý chọn ngôn ngữ
     const langButtons = document.querySelectorAll('.lang-btn');
     langButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             langButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             // Thêm code xử lý thay đổi ngôn ngữ ở đây
         });
     });
 
-    // Đảm bảo updateJoystickDimensions được gọi nhiều lần sau khi load
+$.on(window, 'load', checkOrientation);
+$.on(window, 'resize', checkOrientation);
+
+document.addEventListener('DOMContentLoaded', function () {
+    initJoystick();
+    checkOrientation();
+
+    ['orientationchange', 'resize'].forEach(evt => {
+        window.addEventListener(evt, () => {
+            checkOrientation();
+            updateJoystickDimensions();
+        });
+    });
+
+    // Menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
+    menuToggle.addEventListener('click', function () {
+        menuDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', function (event) {
+        if (!menuToggle.contains(event.target) && !menuDropdown.contains(event.target)) {
+            menuDropdown.classList.remove('show');
+        }
+    });
+
+    // Đảm bảo updateJoystickDimensions được gọi nhiều lần sau khi load (fix lỗi render chậm)
     let tries = 0;
     function tryUpdate() {
         updateJoystickDimensions();
@@ -405,8 +424,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     tryUpdate();
+
+    // Đặt lại tốc độ ban đầu cho thanh speed
     setTimeout(() => {
-        updateThrottle(controlState.throttle);
+        updateSpeed(controlState.speed);
     }, 100);
 });
-window.addEventListener('load', updateJoystickDimensions);
